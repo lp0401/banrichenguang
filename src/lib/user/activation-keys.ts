@@ -116,13 +116,19 @@ export async function createActivationKeys(
         }
 
         // 生成Key
-        const keysToCreate = [];
+        const keysToCreate: Array<{
+            key_code: string;
+            key_type: KeyType;
+            membership_type: MembershipType | null;
+            credits_amount: number | null;
+            created_by: string;
+        }> = [];
         for (let i = 0; i < params.count; i++) {
             keysToCreate.push({
                 key_code: generateKeyCode(),
                 key_type: params.keyType,
-                membership_type: params.keyType === 'membership' ? params.membershipType : null,
-                credits_amount: params.keyType === 'credits' ? params.creditsAmount : null,
+                membership_type: params.keyType === 'membership' ? (params.membershipType ?? null) : null,
+                credits_amount: params.keyType === 'credits' ? (params.creditsAmount ?? null) : null,
                 created_by: adminId,
             });
         }
@@ -132,12 +138,13 @@ export async function createActivationKeys(
                 .from('activation_keys')
                 .insert(keysToCreate)
                 .select('key_code')
-            : await withPrivilegedClient((client) =>
-                client
+            : await withPrivilegedClient(async (client) => {
+                const result = await client
                     .from('activation_keys')
                     .insert(keysToCreate)
-                    .select('key_code'),
-            );
+                    .select('key_code');
+                return result;
+            });
 
         if (error) {
             console.error('[activation-keys] Failed to create keys:', error);
@@ -208,12 +215,13 @@ export async function deleteActivationKey(
                 .from('activation_keys')
                 .delete()
                 .eq('id', keyId)
-            : await withPrivilegedClient((client) =>
-                client
+            : await withPrivilegedClient(async (client) => {
+                const result = await client
                     .from('activation_keys')
                     .delete()
-                    .eq('id', keyId),
-            );
+                    .eq('id', keyId);
+                return result;
+            });
 
         if (error) {
             console.error('[activation-keys] Failed to delete key:', error);
