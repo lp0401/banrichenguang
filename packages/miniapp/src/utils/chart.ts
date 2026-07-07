@@ -82,9 +82,31 @@ export function stripChartBlocks(markdown: string): string {
     .trim();
 }
 
+export interface PhysiognomyAnnotationEntry {
+  feature: string;
+  description: string;
+}
+
+export interface PhysiognomyAnnotationData {
+  chartType: 'physiognomy_annotation';
+  title: string;
+  data: {
+    type: 'palm' | 'face';
+    annotations: PhysiognomyAnnotationEntry[];
+    overallAssessment?: string;
+  };
+}
+
 /**
- * 从 Markdown 中专门提取 tarot_elements 图表数据。
+ * 从 Markdown 中提取 physiognomy_annotation 图表数据（手相/面相特征标注）。
  */
+export function extractPhysiognomyAnnotation(
+  markdown: string,
+): PhysiognomyAnnotationData | null {
+  const chart = extractFirstChart<PhysiognomyAnnotationData>(markdown);
+  if (!chart || chart.chartType !== 'physiognomy_annotation') return null;
+  return chart.raw;
+}
 export function extractTarotElements(markdown: string): TarotElementsData | null {
   const chart = extractFirstChart<TarotElementsData>(markdown);
   if (!chart || chart.chartType !== 'tarot_elements') return null;

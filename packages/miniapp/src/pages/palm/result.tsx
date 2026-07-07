@@ -8,6 +8,7 @@ import { post } from '@/utils/request';
 import { handleAnalysisError } from '@/utils/divination-errors';
 import { safeDecodeURIComponent } from '@/utils/string';
 import { getAccessToken } from '@/utils/storage';
+import { extractPhysiognomyAnnotation, stripChartBlocks, type PhysiognomyAnnotationData } from '@/utils/chart';
 import type { ImageData, InterpretResponse } from '@/types/vision';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
@@ -51,6 +52,7 @@ const GENERIC_ERROR = '请求失败，请稍后重试';
 export default function PalmResultPage() {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [reasoning, setReasoning] = useState<string | null>(null);
+  const [chart, setChart] = useState<PhysiognomyAnnotationData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [pageParams, setPageParams] = useState<{ analysisType: string; handType: string; question: string; title: string } | null>(null);
@@ -125,8 +127,9 @@ export default function PalmResultPage() {
         }
 
         if (!cancelled) {
-          setAnalysis(response.analysis);
+          setAnalysis(stripChartBlocks(response.analysis));
           setReasoning(response.reasoning ?? null);
+          setChart(extractPhysiognomyAnnotation(response.analysis));
         }
       } catch (err) {
         if (cancelled) return;
@@ -199,20 +202,102 @@ export default function PalmResultPage() {
         </Section>
       )}
 
-      <Section title="分析结果">
-        <Card bg="muted" padding="md">
-          <Text
-            style={{
-              fontSize: 'var(--text-base)',
-              color: 'var(--text-secondary)',
-              lineHeight: 'var(--leading-relaxed)',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {analysis}
-          </Text>
-        </Card>
-      </Section>
+      {chart && chart.data.annotations.length > 0 && (
+        <Section title={chart.title || '手相特征'}>
+          <View style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            {chart.data.annotations.map((item, idx) => (
+              <Card key={idx} bg="default" padding="md">
+                <View
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 'var(--space-3)',
+                  }}
+                >
+                  <View
+                    style={{
+                      width: '40rpx',
+                      height: '40rpx',
+                      borderRadius: '50%',
+                      background: 'var(--primary-gradient, linear-gradient(135deg, #8b5cf6, #a78bfa))',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2rpx',
+                    }}
+                  >
+                    <Text style={{ fontSize: 'var(--text-xs)', color: '#fff', fontWeight: 'var(--font-bold)' }}>
+                      {idx + 1}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      style={{
+                        fontSize: 'var(--text-base)',
+                        fontWeight: 'var(--font-bold)',
+                        color: 'var(--text-primary)',
+                        marginBottom: 'var(--space-1)',
+                      }}
+                    >
+                      {item.feature}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--text-secondary)',
+                        lineHeight: 'var(--leading-relaxed)',
+                      }}
+                    >
+                      {item.description}
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            ))}
+            {chart.data.overallAssessment && (
+              <Card bg="muted" padding="md">
+                <Text
+                  style={{
+                    fontSize: 'var(--text-sm)',
+                    color: 'var(--text-tertiary)',
+                    marginBottom: 'var(--space-2)',
+                    fontWeight: 'var(--font-bold)',
+                  }}
+                >
+                  总体评价
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 'var(--text-base)',
+                    color: 'var(--text-secondary)',
+                    lineHeight: 'var(--leading-relaxed)',
+                  }}
+                >
+                  {chart.data.overallAssessment}
+                </Text>
+              </Card>
+            )}
+          </View>
+        </Section>
+      )}
+
+      {analysis && (
+        <Section title="分析结果">
+          <Card bg="muted" padding="md">
+            <Text
+              style={{
+                fontSize: 'var(--text-base)',
+                color: 'var(--text-secondary)',
+                lineHeight: 'var(--leading-relaxed)',
+                whiteSpace: 'pre-wrap',
+              }}
+            >
+              {analysis}
+            </Text>
+          </Card>
+        </Section>
+      )}
 
       <Button variant="primary" onClick={() => Taro.navigateBack()} block>
         重新分析
