@@ -89,7 +89,8 @@ export function toCoreMessages(
                 content: [
                     {
                         type: 'image' as const,
-                        image: `data:${options.imageMimeType || 'image/jpeg'};base64,${options.imageBase64}`,
+                        image: options.imageBase64,
+                        mediaType: options.imageMimeType || 'image/jpeg',
                     },
                     {
                         type: 'text' as const,
