@@ -20,7 +20,7 @@ CREATE TABLE public.activation_keys (
 );
 CREATE TABLE public.ai_gateways (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
-  gateway_key text NOT NULL UNIQUE CHECK (gateway_key = ANY (ARRAY['newapi'::text, 'octopus'::text])),
+  gateway_key text NOT NULL UNIQUE CHECK (gateway_key = ANY (ARRAY['newapi'::text, 'octopus'::text, 'nvidia'::text])),
   display_name text NOT NULL,
   base_url text NOT NULL DEFAULT ''::text,
   api_key_env_var text NOT NULL,

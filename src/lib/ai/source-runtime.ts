@@ -6,7 +6,7 @@ import type {
   AIUsageType,
 } from '@/types';
 
-export const MANAGED_AI_SOURCE_KEYS = ['newapi', 'octopus'] as const;
+export const MANAGED_AI_SOURCE_KEYS = ['newapi', 'octopus', 'nvidia'] as const;
 export type ManagedAISourceKey = (typeof MANAGED_AI_SOURCE_KEYS)[number];
 export const DEFAULT_AI_TRANSPORT: AITransport = 'openai_compatible';
 

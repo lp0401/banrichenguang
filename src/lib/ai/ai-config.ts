@@ -9,10 +9,10 @@ import type { AIModelConfig, AIModelSourceConfig, AIVendor } from '@/types';
 import { buildManagedApiUrl, DEFAULT_AI_TRANSPORT, getModelUsageType } from './source-runtime';
 
 type GatewaySourceEnv = {
-  sourceKey: 'newapi' | 'octopus';
+  sourceKey: 'newapi' | 'octopus' | 'nvidia';
   sourceName: string;
-  baseUrlEnvVar: 'NEWAPI_BASE_URL' | 'OCTOPUS_BASE_URL';
-  apiKeyEnvVar: 'NEWAPI_API_KEY' | 'OCTOPUS_API_KEY';
+  baseUrlEnvVar: 'NEWAPI_BASE_URL' | 'OCTOPUS_BASE_URL' | 'NVIDIA_BASE_URL';
+  apiKeyEnvVar: 'NEWAPI_API_KEY' | 'OCTOPUS_API_KEY' | 'NVIDIA_API_KEY';
   priority: number;
   isActive: boolean;
 };
@@ -33,6 +33,14 @@ const GATEWAY_SOURCES: GatewaySourceEnv[] = [
     apiKeyEnvVar: 'OCTOPUS_API_KEY',
     priority: 2,
     isActive: false,
+  },
+  {
+    sourceKey: 'nvidia',
+    sourceName: 'NVIDIA',
+    baseUrlEnvVar: 'NVIDIA_BASE_URL',
+    apiKeyEnvVar: 'NVIDIA_API_KEY',
+    priority: 3,
+    isActive: true,
   },
 ];
 
