@@ -20,9 +20,10 @@
     "@tarojs/runtime": "3.6.34",
     "@tarojs/shared": "3.6.34",
     "@tarojs/taro": "3.6.34",
+    "banri-chenguang-core": "workspace:*",
+    "markdown-it": "^14.3.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "banri-chenguang-core": "workspace:*"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
@@ -30,6 +31,7 @@
     "@babel/preset-typescript": "^7.24.0",
     "@tarojs/cli": "3.6.34",
     "@tarojs/webpack5-runner": "3.6.34",
+    "@types/markdown-it": "^14.1.2",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@types/webpack-env": "^1.18.0",

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getModelsAsync } from '@/lib/server/ai-config';
+import { getSystemAdminClient } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,6 +9,15 @@ export async function GET() {
   const visionModels = models.filter(
     (m) => m.usageType === 'vision' || m.supportsVision,
   );
+
+  const supabase = getSystemAdminClient();
+  const { data: rawBindings, error: bindingsError } = await supabase
+    .from('ai_model_gateway_bindings')
+    .select('id, model_id, gateway_id, model_id_override, is_enabled, gateway:ai_gateways(*)');
+
+  const { data: rawGateways, error: gatewaysError } = await supabase
+    .from('ai_gateways')
+    .select('*');
 
   return NextResponse.json({
     nvidiaBaseUrl: process.env.NVIDIA_BASE_URL || null,
@@ -29,5 +39,9 @@ export async function GET() {
         isEnabled: s.isEnabled,
       })),
     })),
+    rawBindings,
+    bindingsError,
+    rawGateways,
+    gatewaysError,
   });
 }

@@ -2,6 +2,7 @@ import Button from '@/components/Button';
 import Card from '@/components/Card';
 import ErrorState from '@/components/ErrorState';
 import Loading from '@/components/Loading';
+import Markdown from '@/components/Markdown';
 import ResultHeader from '@/components/ResultHeader';
 import Section from '@/components/Section';
 import { post } from '@/utils/request';
@@ -188,16 +189,7 @@ export default function PalmResultPage() {
       {reasoning && (
         <Section title="推理过程">
           <Card bg="muted" padding="md">
-            <Text
-              style={{
-                fontSize: 'var(--text-sm)',
-                color: 'var(--text-secondary)',
-                lineHeight: 'var(--leading-relaxed)',
-                whiteSpace: 'pre-wrap',
-              }}
-            >
-              {reasoning}
-            </Text>
+            <Markdown content={reasoning} />
           </Card>
         </Section>
       )}
@@ -257,25 +249,7 @@ export default function PalmResultPage() {
             ))}
             {chart.data.overallAssessment && (
               <Card bg="muted" padding="md">
-                <Text
-                  style={{
-                    fontSize: 'var(--text-sm)',
-                    color: 'var(--text-tertiary)',
-                    marginBottom: 'var(--space-2)',
-                    fontWeight: 'var(--font-bold)',
-                  }}
-                >
-                  总体评价
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 'var(--text-base)',
-                    color: 'var(--text-secondary)',
-                    lineHeight: 'var(--leading-relaxed)',
-                  }}
-                >
-                  {chart.data.overallAssessment}
-                </Text>
+                <Markdown content={`**总体评价**\n\n${chart.data.overallAssessment}`} />
               </Card>
             )}
           </View>
@@ -285,16 +259,7 @@ export default function PalmResultPage() {
       {analysis && (
         <Section title="分析结果">
           <Card bg="muted" padding="md">
-            <Text
-              style={{
-                fontSize: 'var(--text-base)',
-                color: 'var(--text-secondary)',
-                lineHeight: 'var(--leading-relaxed)',
-                whiteSpace: 'pre-wrap',
-              }}
-            >
-              {analysis}
-            </Text>
+            <Markdown content={analysis} />
           </Card>
         </Section>
       )}
