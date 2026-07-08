@@ -2,17 +2,17 @@ import Button from '@/components/Button';
 import Card from '@/components/Card';
 import ErrorState from '@/components/ErrorState';
 import Loading from '@/components/Loading';
-import Markdown from '@/components/Markdown';
 import ResultHeader from '@/components/ResultHeader';
 import Section from '@/components/Section';
 import { post } from '@/utils/request';
 import { handleAnalysisError } from '@/utils/divination-errors';
 import { safeDecodeURIComponent } from '@/utils/string';
 import { getAccessToken } from '@/utils/storage';
+import { stripMarkdown } from '@/utils/chart';
 import type { ImageData, InterpretResponse } from '@/types/vision';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { View } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
 
 interface FaceType {
   id: string;
@@ -164,14 +164,32 @@ export default function FaceResultPage() {
       {reasoning && (
         <Section title="推理过程">
           <Card bg="muted" padding="md">
-            <Markdown content={reasoning} />
+            <Text
+              style={{
+                fontSize: 'var(--text-sm)',
+                color: 'var(--text-secondary)',
+                lineHeight: 'var(--leading-relaxed)',
+                whiteSpace: 'pre-wrap',
+              }}
+            >
+              {stripMarkdown(reasoning)}
+            </Text>
           </Card>
         </Section>
       )}
 
       <Section title="分析结果">
         <Card bg="muted" padding="md">
-          <Markdown content={analysis} />
+          <Text
+            style={{
+              fontSize: 'var(--text-base)',
+              color: 'var(--text-secondary)',
+              lineHeight: 'var(--leading-relaxed)',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {stripMarkdown(analysis)}
+          </Text>
         </Card>
       </Section>
 

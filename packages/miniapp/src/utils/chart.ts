@@ -39,6 +39,24 @@ export interface TarotElementsData {
 }
 
 /**
+ * 移除 Markdown 标记符号，转成纯文本。
+ * 用于 RichText 不稳定时的降级展示。
+ */
+export function stripMarkdown(markdown: string): string {
+  return markdown
+    .replace(/^#{1,6}\s*/gm, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/_(.+?)_/g, '$1')
+    .replace(/`(.+?)`/g, '$1')
+    .replace(/^[-*+]\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/**
  * 从 Markdown 中提取第一个 ```chart 代码块。
  * 解析失败或格式不符时返回 null，调用方应降级为纯文本展示。
  */
