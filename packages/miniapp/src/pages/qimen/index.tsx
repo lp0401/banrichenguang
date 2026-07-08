@@ -1,3 +1,4 @@
+import './index.css';
 import Button from '@/components/Button';
 import FormControl from '@/components/FormControl';
 import FormItem from '@/components/FormItem';

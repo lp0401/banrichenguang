@@ -1,3 +1,4 @@
+import './test.css';
 import Button from '@/components/Button';
 import { useState } from 'react';
 import Taro from '@tarojs/taro';

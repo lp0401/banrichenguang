@@ -1,3 +1,4 @@
+import './index.css';
 import Button from '@/components/Button';
 import { useState, useCallback } from 'react';
 import Taro, { useDidShow } from '@tarojs/taro';

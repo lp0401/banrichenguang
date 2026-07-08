@@ -4,8 +4,8 @@
   "private": true,
   "license": "AGPL-3.0-only",
   "scripts": {
-    "dev:weapp": "taro build --type weapp --watch",
-    "build:weapp": "taro build --type weapp",
+    "dev:weapp": "node ../../scripts/import-page-styles.js && taro build --type weapp --watch",
+    "build:weapp": "node ../../scripts/import-page-styles.js && taro build --type weapp",
     "dev:h5": "taro build --type h5 --watch",
     "build:h5": "taro build --type h5",
     "type-check": "tsc --noEmit"

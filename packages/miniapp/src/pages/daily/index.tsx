@@ -1,3 +1,4 @@
+import './index.css';
 import Button from '@/components/Button';
 import { useState } from 'react';
 import { calculateDailyAlmanac, toAlmanacText } from 'banri-chenguang-core/almanac';

@@ -1,3 +1,4 @@
+import './index.css';
 import { View, Text } from '@tarojs/components';
 import Button from '@/components/Button';
 import { useState, useCallback } from 'react';

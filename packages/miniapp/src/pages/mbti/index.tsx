@@ -1,3 +1,4 @@
+import './index.css';
 import Button from '@/components/Button';
 import Taro from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
