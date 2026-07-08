@@ -258,10 +258,21 @@ async function fetchModelsFromDB(): Promise<AIModelConfig[] | null> {
 
 export async function getModelsAsync(): Promise<AIModelConfig[]> {
   const dbModels = await fetchModelsFromDB();
-  if (dbModels !== null) {
-    return dbModels;
+  const envModels = buildModels();
+
+  // 数据库正常取到模型时，以数据库为准；但如果数据库为空或取失败，
+  // 允许用环境变量回退模型兜底，避免线上因未配置模型而直接报“模型不可用”。
+  const merged = new Map<string, AIModelConfig>();
+  for (const model of dbModels ?? []) {
+    merged.set(model.id, model);
   }
-  return buildModels();
+  for (const model of envModels) {
+    if (!merged.has(model.id)) {
+      merged.set(model.id, model);
+    }
+  }
+
+  return Array.from(merged.values());
 }
 
 export async function getModelsByUsageTypeAsync(
