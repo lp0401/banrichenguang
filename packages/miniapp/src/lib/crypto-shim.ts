@@ -1,7 +1,7 @@
 // 为 banri-chenguang-core 在小程序环境提供 Node crypto 的极简 polyfill
 // 仅覆盖 core 实际使用的 sha256 + readUInt32BE/digest('hex')
 
-import { SHA256 } from 'crypto-js';
+import CryptoJS from 'crypto-js';
 
 class HashShim {
   private input = '';
@@ -14,7 +14,7 @@ class HashShim {
   digest(): { readUInt32BE(offset: number): number };
   digest(encoding: 'hex'): string;
   digest(encoding?: 'hex'): { readUInt32BE(offset: number): number } | string {
-    const hex = SHA256(this.input).toString();
+    const hex = CryptoJS.SHA256(this.input).toString();
     if (encoding === 'hex') {
       return hex;
     }

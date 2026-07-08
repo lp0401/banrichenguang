@@ -52,8 +52,18 @@ export function stripMarkdown(markdown: string): string {
     .replace(/`(.+?)`/g, '$1')
     .replace(/^[-*+]\s+/gm, '')
     .replace(/^\d+\.\s+/gm, '')
+    // 清理 Markdown 表格分隔线
+    .replace(/^[ \t]*\|[\s\-:|]+\|[ \t]*$/gm, '')
+    // 把表格列分隔符替换为空格
+    .replace(/\|/g, ' ')
+    // 折叠多余空白
+    .replace(/[ \t]{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+}
+
+export function stripMarkdownAndCharts(markdown: string): string {
+  return stripMarkdown(stripChartBlocks(markdown));
 }
 
 /**

@@ -11,7 +11,7 @@ import { calculateTarot, toTarotText } from 'banri-chenguang-core/tarot';
 import { View, Text } from '@tarojs/components';
 import { post } from '@/utils/request';
 import { getAccessToken } from '@/utils/storage';
-import { stripChartBlocks } from '@/utils/chart';
+import { stripMarkdown, stripMarkdownAndCharts } from '@/utils/chart';
 
 type TarotResult = Awaited<ReturnType<typeof calculateTarot>>;
 
@@ -80,8 +80,8 @@ export default function TarotResultPage() {
   }, []);
 
   function applyInterpretResult(analysis: string, reasoning?: string | null) {
-    setAiReasoning(reasoning ?? null);
-    setAiText(stripChartBlocks(analysis));
+    setAiReasoning(reasoning ? stripMarkdown(reasoning) : null);
+    setAiText(stripMarkdownAndCharts(analysis));
   }
 
   const handleInterpret = async () => {
@@ -218,8 +218,8 @@ export default function TarotResultPage() {
 
       <Section title="牌阵解读">
         <Card bg="muted" padding="md">
-          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)' }}>
-            {toTarotText(result, { detailLevel: 'default' })}
+          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+            {stripMarkdown(toTarotText(result, { detailLevel: 'default' }))}
           </Text>
         </Card>
       </Section>

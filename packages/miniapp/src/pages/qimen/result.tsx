@@ -7,10 +7,12 @@ import ResultHeader from '@/components/ResultHeader';
 import Section from '@/components/Section';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { calculateQimen, toQimenText } from 'banri-chenguang-core/qimen';
+import { toQimenText, type QimenOutput } from 'banri-chenguang-core/qimen';
 import { View, Text } from '@tarojs/components';
+import { post } from '@/utils/request';
+import { stripMarkdown } from '@/utils/chart';
 
-type QimenResult = Awaited<ReturnType<typeof calculateQimen>>;
+type QimenResult = QimenOutput;
 
 export default function QimenResultPage() {
   const [result, setResult] = useState<QimenResult | null>(null);
@@ -23,7 +25,7 @@ export default function QimenResultPage() {
 
     (async () => {
       try {
-        const res = await calculateQimen({
+        const res = await post<QimenOutput>('/api/miniapp/qimen/calculate', {
           year: Number(params.year),
           month: Number(params.month),
           day: Number(params.day),
@@ -97,8 +99,8 @@ export default function QimenResultPage() {
 
       <Section title="盘局解读">
         <Card bg="muted" padding="md">
-          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)' }}>
-            {toQimenText(result, { detailLevel: 'default' })}
+          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+            {stripMarkdown(toQimenText(result, { detailLevel: 'default' }))}
           </Text>
         </Card>
       </Section>

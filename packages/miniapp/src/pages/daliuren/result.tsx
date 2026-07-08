@@ -8,6 +8,7 @@ import Section from '@/components/Section';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { calculateDaliuren, toDaliurenText } from 'banri-chenguang-core/daliuren';
+import { stripMarkdown } from '@/utils/chart';
 import { View, Text } from '@tarojs/components';
 
 export default function DaliurenResultPage() {
@@ -81,8 +82,8 @@ export default function DaliurenResultPage() {
 
       <Section title="课体解读">
         <Card bg="muted" padding="md">
-          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)' }}>
-            {toDaliurenText(result, { detailLevel: 'default' })}
+          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+            {stripMarkdown(toDaliurenText(result, { detailLevel: 'default' }))}
           </Text>
         </Card>
       </Section>

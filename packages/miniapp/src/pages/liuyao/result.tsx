@@ -9,9 +9,24 @@ import Tag from '@/components/Tag';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { calculateLiuyao, toLiuyaoText } from 'banri-chenguang-core/liuyao';
+import { stripMarkdown } from '@/utils/chart';
 import { View, Text } from '@tarojs/components';
 
 type LiuyaoResult = Awaited<ReturnType<typeof calculateLiuyao>>;
+
+function normalizeDateTime(value?: string): string {
+  if (!value || !value.trim()) {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  }
+  const trimmed = value.trim();
+  const hasTime = /[T ]\d{2}:\d{2}/.test(trimmed);
+  if (!hasTime) {
+    const now = new Date();
+    return `${trimmed}T${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  }
+  return trimmed.replace(' ', 'T');
+}
 
 export default function LiuyaoResultPage() {
   const [result, setResult] = useState<LiuyaoResult | null>(null);
@@ -33,7 +48,7 @@ export default function LiuyaoResultPage() {
           yongShenTargets: (params.yongShen ? decodeURIComponent(params.yongShen) : '').split(',').filter(Boolean) as Parameters<typeof calculateLiuyao>[0]['yongShenTargets'],
           method: (params.method as 'auto' | 'number' | 'time') || 'auto',
           numbers,
-          date: params.date || new Date().toISOString(),
+          date: normalizeDateTime(params.date as string | undefined),
         });
         if (!cancelled) setResult(res);
       } catch (err) {
@@ -116,8 +131,8 @@ export default function LiuyaoResultPage() {
 
       <Section title="卦象解读">
         <Card bg="muted" padding="md">
-          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)' }}>
-            {toLiuyaoText(result, { detailLevel: 'default' })}
+          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+            {stripMarkdown(toLiuyaoText(result, { detailLevel: 'default' }))}
           </Text>
         </Card>
       </Section>

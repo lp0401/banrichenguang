@@ -9,6 +9,7 @@ import Tag from '@/components/Tag';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { calculateZiwei, toZiweiText } from 'banri-chenguang-core/ziwei';
+import { stripMarkdown } from '@/utils/chart';
 import { View, Text } from '@tarojs/components';
 
 export default function ZiweiResultPage() {
@@ -94,8 +95,8 @@ export default function ZiweiResultPage() {
 
       <Section title="命盘解读">
         <Card bg="muted" padding="md">
-          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)' }}>
-            {toZiweiText(result, { detailLevel: 'default' })}
+          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+            {stripMarkdown(toZiweiText(result, { detailLevel: 'default' }))}
           </Text>
         </Card>
       </Section>

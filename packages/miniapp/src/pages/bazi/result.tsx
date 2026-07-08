@@ -8,6 +8,7 @@ import Section from '@/components/Section';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { calculateBazi, toBaziText } from 'banri-chenguang-core/bazi';
+import { stripMarkdown } from '@/utils/chart';
 import { View, Text } from '@tarojs/components';
 
 export default function BaziResultPage() {
@@ -85,8 +86,8 @@ export default function BaziResultPage() {
 
       <Section title="命局解读">
         <Card bg="muted" padding="md">
-          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)' }}>
-            {toBaziText(result, { detailLevel: 'default' })}
+          <Text style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+            {stripMarkdown(toBaziText(result, { detailLevel: 'default' }))}
           </Text>
         </Card>
       </Section>
