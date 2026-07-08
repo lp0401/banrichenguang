@@ -232,16 +232,33 @@ export default function PalmResultPage() {
                     </Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text
-                      style={{
-                        fontSize: 'var(--text-base)',
-                        fontWeight: 'var(--font-bold)',
-                        color: 'var(--text-primary)',
-                        marginBottom: 'var(--space-1)',
-                      }}
-                    >
-                      {item.feature}
-                    </Text>
+                    <View style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-1)' }}>
+                      <Text
+                        style={{
+                          fontSize: 'var(--text-base)',
+                          fontWeight: 'var(--font-bold)',
+                          color: 'var(--text-primary)',
+                        }}
+                      >
+                        {item.label}
+                      </Text>
+                        {item.confidence && (
+                        <Text
+                          style={{
+                            fontSize: 'var(--text-xs)',
+                            color: 'var(--text-tertiary)',
+                            backgroundColor: 'var(--bg-muted)',
+                            paddingLeft: 'var(--space-2)',
+                            paddingRight: 'var(--space-2)',
+                            paddingTop: '2rpx',
+                            paddingBottom: '2rpx',
+                            borderRadius: 'var(--radius-sm)',
+                          }}
+                        >
+                          可信度：{item.confidence}
+                        </Text>
+                      )}
+                    </View>
                     <Text
                       style={{
                         fontSize: 'var(--text-sm)',
@@ -249,7 +266,7 @@ export default function PalmResultPage() {
                         lineHeight: 'var(--leading-relaxed)',
                       }}
                     >
-                      {item.description}
+                      {item.observation}
                     </Text>
                   </View>
                 </View>
@@ -257,16 +274,17 @@ export default function PalmResultPage() {
             ))}
             {chart.data.overallAssessment && (
               <Card bg="muted" padding="md">
-                <Text
-                  style={{
-                    fontSize: 'var(--text-sm)',
-                    color: 'var(--text-tertiary)',
-                    marginBottom: 'var(--space-2)',
-                    fontWeight: 'var(--font-bold)',
-                  }}
-                >
-                  总体评价
-                </Text>
+                <View style={{ marginBottom: 'var(--space-2)' }}>
+                  <Text
+                    style={{
+                      fontSize: 'var(--text-sm)',
+                      color: 'var(--text-tertiary)',
+                      fontWeight: 'var(--font-bold)',
+                    }}
+                  >
+                    总体评价
+                  </Text>
+                </View>
                 <Text
                   style={{
                     fontSize: 'var(--text-base)',
