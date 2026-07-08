@@ -49,7 +49,7 @@ export default function LiuyaoResultPage() {
           yongShenTargets: (params.yongShen ? decodeURIComponent(params.yongShen) : '').split(',').filter(Boolean) as Parameters<typeof calculateLiuyao>[0]['yongShenTargets'],
           method: (params.method as 'auto' | 'number' | 'time') || 'auto',
           numbers,
-          date: normalizeDateTime(params.date as string | undefined),
+          date: normalizeDateTime(params.date ? decodeURIComponent(params.date as string) : undefined),
         });
         if (!cancelled) setResult(res);
       } catch (err) {
