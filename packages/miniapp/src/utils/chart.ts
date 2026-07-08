@@ -101,9 +101,16 @@ export function stripChartBlocks(markdown: string): string {
 }
 
 export interface PhysiognomyAnnotationEntry {
-  label: string;
-  observation: string;
+  label?: string;
+  observation?: string;
   confidence?: string;
+  feature?: string;
+  description?: string;
+  name?: string;
+  title?: string;
+  content?: string;
+  interpretation?: string;
+  detail?: string;
 }
 
 export interface PhysiognomyAnnotationData {

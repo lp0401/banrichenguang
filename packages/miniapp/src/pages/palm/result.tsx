@@ -8,7 +8,7 @@ import { post } from '@/utils/request';
 import { handleAnalysisError } from '@/utils/divination-errors';
 import { safeDecodeURIComponent } from '@/utils/string';
 import { getAccessToken } from '@/utils/storage';
-import { extractPhysiognomyAnnotation, stripChartBlocks, stripMarkdown, type PhysiognomyAnnotationData } from '@/utils/chart';
+import { extractPhysiognomyAnnotation, stripChartBlocks, stripMarkdown, type PhysiognomyAnnotationData, type PhysiognomyAnnotationEntry } from '@/utils/chart';
 import type { ImageData, InterpretResponse } from '@/types/vision';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
@@ -38,6 +38,14 @@ const HAND_OPTIONS: HandOption[] = [
   { id: 'right', name: '右手' },
   { id: 'both', name: '双手' },
 ];
+
+function getAnnotationLabel(item: PhysiognomyAnnotationEntry): string {
+  return item.label || item.feature || item.name || item.title || '';
+}
+
+function getAnnotationObservation(item: PhysiognomyAnnotationEntry): string {
+  return item.observation || item.description || item.content || item.interpretation || item.detail || '';
+}
 
 function getPalmTypeName(id: string): string {
   return PALM_TYPES.find((t) => t.id === id)?.name || '综合分析';
@@ -205,73 +213,92 @@ export default function PalmResultPage() {
       {chart && chart.data.annotations.length > 0 && (
         <Section title={chart.title || '手相特征'}>
           <View style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {chart.data.annotations.map((item, idx) => (
-              <Card key={idx} bg="default" padding="md">
-                <View
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 'var(--space-3)',
-                  }}
-                >
+            {chart.data.annotations.map((item, idx) => {
+              const displayLabel = getAnnotationLabel(item);
+              const displayObservation = getAnnotationObservation(item);
+              return (
+                <Card key={idx} bg="default" padding="md">
                   <View
                     style={{
-                      width: '40rpx',
-                      height: '40rpx',
-                      borderRadius: '50%',
-                      background: 'var(--primary-gradient, linear-gradient(135deg, #8b5cf6, #a78bfa))',
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      marginTop: '2rpx',
+                      alignItems: 'flex-start',
+                      gap: 'var(--space-3)',
                     }}
                   >
-                    <Text style={{ fontSize: 'var(--text-xs)', color: '#fff', fontWeight: 'var(--font-bold)' }}>
-                      {idx + 1}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <View style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-1)' }}>
-                      <Text
-                        style={{
-                          fontSize: 'var(--text-base)',
-                          fontWeight: 'var(--font-bold)',
-                          color: 'var(--text-primary)',
-                        }}
-                      >
-                        {item.label}
+                    <View
+                      style={{
+                        width: '40rpx',
+                        height: '40rpx',
+                        borderRadius: '50%',
+                        background: 'var(--primary-gradient, linear-gradient(135deg, #8b5cf6, #a78bfa))',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        marginTop: '2rpx',
+                      }}
+                    >
+                      <Text style={{ fontSize: 'var(--text-xs)', color: '#fff', fontWeight: 'var(--font-bold)' }}>
+                        {idx + 1}
                       </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <View style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-1)' }}>
+                        {displayLabel && (
+                          <Text
+                            style={{
+                              fontSize: 'var(--text-base)',
+                              fontWeight: 'var(--font-bold)',
+                              color: 'var(--text-primary)',
+                            }}
+                          >
+                            {displayLabel}
+                          </Text>
+                        )}
                         {item.confidence && (
+                          <Text
+                            style={{
+                              fontSize: 'var(--text-xs)',
+                              color: 'var(--text-tertiary)',
+                              backgroundColor: 'var(--bg-muted)',
+                              paddingLeft: 'var(--space-2)',
+                              paddingRight: 'var(--space-2)',
+                              paddingTop: '2rpx',
+                              paddingBottom: '2rpx',
+                              borderRadius: 'var(--radius-sm)',
+                            }}
+                          >
+                            可信度：{item.confidence}
+                          </Text>
+                        )}
+                      </View>
+                      {displayObservation ? (
+                        <Text
+                          style={{
+                            fontSize: 'var(--text-sm)',
+                            color: 'var(--text-secondary)',
+                            lineHeight: 'var(--leading-relaxed)',
+                          }}
+                        >
+                          {displayObservation}
+                        </Text>
+                      ) : (
                         <Text
                           style={{
                             fontSize: 'var(--text-xs)',
                             color: 'var(--text-tertiary)',
-                            backgroundColor: 'var(--bg-muted)',
-                            paddingLeft: 'var(--space-2)',
-                            paddingRight: 'var(--space-2)',
-                            paddingTop: '2rpx',
-                            paddingBottom: '2rpx',
-                            borderRadius: 'var(--radius-sm)',
+                            fontFamily: 'monospace',
+                            whiteSpace: 'pre-wrap',
                           }}
                         >
-                          可信度：{item.confidence}
+                          {JSON.stringify(item, null, 2)}
                         </Text>
                       )}
                     </View>
-                    <Text
-                      style={{
-                        fontSize: 'var(--text-sm)',
-                        color: 'var(--text-secondary)',
-                        lineHeight: 'var(--leading-relaxed)',
-                      }}
-                    >
-                      {item.observation}
-                    </Text>
                   </View>
-                </View>
-              </Card>
-            ))}
+                </Card>
+              );
+            })}
             {chart.data.overallAssessment && (
               <Card bg="muted" padding="md">
                 <View style={{ marginBottom: 'var(--space-2)' }}>
