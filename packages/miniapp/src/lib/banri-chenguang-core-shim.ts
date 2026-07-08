@@ -1,7 +1,7 @@
 // 为 banri-chenguang-core 在小程序环境提供 polyfill
 // 此文件需要在应用启动时最先执行
 
-import CryptoJS from 'crypto-js';
+import { sha256Hex } from './sha256';
 
 interface ProcessPolyfill {
   env: Record<string, string>;
@@ -32,9 +32,7 @@ if (!globalWithProcess.process.env.TZ) {
 }
 
 // 暴露一个安全的 sha256 工具（供可能的手动调用）
-export function sha256Hex(input: string): string {
-  return CryptoJS.SHA256(input).toString();
-}
+export { sha256Hex };
 
 const processPolyfill = globalWithProcess.process;
 export default processPolyfill;

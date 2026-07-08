@@ -1,5 +1,7 @@
 // 为 banri-chenguang-core 的 seeded-rng 提供 Node crypto 的最小 polyfill
-import CryptoJS from 'crypto-js';
+// 不依赖 crypto-js，避免 UMD/CommonJS 在小程序运行时的 interop 问题
+
+import { sha256Hex, sha256Words, wordsToBytes } from './sha256';
 
 interface HashLike {
   update(data: string): HashLike;
@@ -14,15 +16,17 @@ function createHash(): HashLike {
       return this;
     },
     digest(): Buffer {
-      const hex = CryptoJS.SHA256(data).toString();
-      // Buffer 在小程序里不存在，返回一个兼容 Uint8Array 的对象
-      const bytes = hex.match(/.{2}/g)?.map((b) => parseInt(b, 16)) ?? [];
+      const hex = sha256Hex(data);
+      const bytes = wordsToBytes(sha256Words(data));
       return {
         readUInt32BE(offset: number): number {
-          return ((bytes[offset] << 24)
-            | (bytes[offset + 1] << 16)
-            | (bytes[offset + 2] << 8)
-            | bytes[offset + 3]) >>> 0;
+          return (
+            ((bytes[offset] << 24) |
+              (bytes[offset + 1] << 16) |
+              (bytes[offset + 2] << 8) |
+              bytes[offset + 3]) >>>
+            0
+          );
         },
         toString(encoding?: string): string {
           if (encoding === 'hex') return hex;
